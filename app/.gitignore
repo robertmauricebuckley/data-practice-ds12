@@ -4,3 +4,5 @@
 # exclude secret creds inside the .env file:
 
 .env 
+
+.vscode

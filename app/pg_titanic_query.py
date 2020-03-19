@@ -42,3 +42,33 @@ CREATE TABLE IF NOT EXISTS passengers (
 """
 cursor.execute(query)
 
+
+cursor.execute("SELECT * from passengers;")
+result = cursor.fetchall()
+print("PASSENGERS:", len(result))
+
+if len(result) == 0:
+    # INSERT RECORDS
+
+    # creating a file path for the csv file that can be read correctly 
+    # regardless of which directory you are in when you run it.
+    # os.path.dirname(__file__) is saying "whats the directory where this file # is" that takes us to that folder then each next space is directions
+    CSV_FILEPATH = os.path.join(os.path.dirname(__file__), "..", "data","titanic.csv")
+    print("FILE EXISTS?", os.path.isfile(CSV_FILEPATH))
+    df = pandas.read_csv(CSV_FILEPATH)
+    print(df.head())
+
+    # turning the csv dataframe into a list of tuples; tuples are needed to be # able to insert them into the new table that was created
+    rows = list(df.itertuples(index=False, name=None))
+
+    # now creat a query that inserts data into the table
+    insertion_query = "INSERT INTO passengers (survived, pclass, name, sex, age, sib_spouse_count, parent_child_count, fare) VALUES %s"
+    execute_values(cursor, insertion_query, rows)
+
+# this saves the transaction
+connection.commit()
+
+    
+
+
+
